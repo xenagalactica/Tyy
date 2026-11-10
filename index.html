@@ -93,6 +93,17 @@ html,body{background:var(--bg)}
 .pname{font-size:17px;line-height:1.3}
 .pabout{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.06em;color:var(--ink-soft);line-height:1.5}
 .pwhy{font-style:italic;font-size:16px;line-height:1.4;color:var(--ink)}
+.set-cut{margin:4px 0 0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.more-h{margin:18px 0 0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.pieces.more:empty{display:none}
+.pside{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.piece.added{animation:addin .5s ease}
+@keyframes addin{from{background:rgba(242,233,221,.12)}to{background:transparent}}
+.padd{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;color:var(--ink);background:none;border:1px solid var(--line);padding:7px 12px;cursor:pointer;white-space:nowrap}
+.padd:hover{border-color:var(--ink-soft)}
+.padd:focus-visible{outline:1px solid var(--ember);outline-offset:2px}
+.set.picked .padd,.set.dim .padd{display:none}
+.set.picked .pieces.more,.set.picked .more-h{display:none}
 .pprice{margin:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:14px;font-variant-numeric:tabular-nums}
 .set-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--ink-soft);padding-top:14px;margin-top:auto;flex-wrap:wrap}
 .set-total{margin:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:16px;font-variant-numeric:tabular-nums}
@@ -214,6 +225,7 @@ html,body{background:var(--bg)}
 .pk-closedwrap img{width:84%;height:auto}
 .pk-photo{aspect-ratio:1/1;max-width:100%;overflow:hidden;background:#fff}
 .pk-photo img{width:100%;height:100%;object-fit:cover}
+.g-self-only{display:none}.gift.self .g-self-only{display:block}.gift.self .g-not-self,.gift.self .g-thanks{display:none}
 .pk-seal{background:var(--paper-2);display:grid;place-items:center}
 .pk-seal img{width:62%;height:auto;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(28,25,21,.28))}
 .lid-seal{width:clamp(72px,9vw,104px);height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.45))}
@@ -303,7 +315,8 @@ html,body{background:var(--bg)}
     </header>
     <section class="g-note" aria-label="A note for you">
       <p class="g-for">For <span id="gTo" class="ed" data-ph="their name">Theo</span></p>
-      <p class="g-label">A note from <span id="gFrom" class="ed" data-ph="your name">Carly</span></p>
+      <p class="g-label g-not-self">A note from <span id="gFrom" class="ed" data-ph="your name">Carly</span></p>
+      <p class="g-label g-self-only">A note to yourself</p>
       <p class="g-words ed" id="gWords" data-ph="Write your note…"></p>
     </section>
     <section class="g-pieces" id="gPieces" aria-label="What’s in your box"></section>
@@ -491,10 +504,36 @@ html,body{background:var(--bg)}
      story:'A small rectangle of warm light on a fine chain. It catches the sun when you move.'},
     {id:'book',name:'Photo book',price:null,imgs:['book'],about:'Nude photography, in warm and pale light',tag:'18+',
      facts:[['Title','[to come]'],['Photographer','[to come]'],['Inside','Nude photography, soft focus and pale prints']],
-     story:'Slow, warm photographs of bodies in low light. For the shelf, or the bedside table.'}
+     story:'Slow, warm photographs of bodies in low light. For the shelf, or the bedside table.'},
+    {id:'incense',name:'Incense, wrapped by hand',price:null,imgs:['incense'],about:'Hand-rolled sticks in handmade paper, tied with twine',
+     facts:[['Made by','[to confirm]'],['Scent','[to confirm]'],['Inside','[number of sticks to confirm]']],
+     story:'Light one when you sit down. Let the room go quiet before you start.'},
+    {id:'journal',name:'Embossed notebook',price:null,imgs:['journal'],about:'A pressed-paper cover of dancing figures, tied with velvet ribbon',
+     facts:[['Cover','Embossed paper, a relief of dancing figures'],['Binding','Brown velvet spine, ribbon tie'],['Pages','[to confirm]'],['Made by','[to confirm]']],
+     story:'For writing down what you want the next months to hold. Or only what you want from tonight.'},
+    {id:'tarot',name:'Tarot cards, Papier Firenze',price:null,imgs:['tarot-1','tarot-2','tarot-3'],about:'A full deck printed on soft, aged paper in Florence',
+     facts:[['Made by','Papier, Firenze'],['Cards','Italian names, line drawings on tan paper'],['Deck','[number of cards to confirm]']],
+     story:'Pull one card before you write. Not for answers, just for something to think about.'},
+    {id:'ring',name:'Gold ring',price:null,imgs:['ring-1','ring-2','ring-3'],about:'A heavy band with scrolls and a small letter on top',
+     facts:[['Metal','Gold-coloured [to confirm]'],['Detail','Raised scrolls around a small letter [to confirm]'],['Size','[to confirm]'],['Age','[to confirm]']],
+     story:'Something to put on at the start of the evening, and keep on after.'}
   ];
-  const BOX1={name:'Box 01',line:'Something sweet, something to wear, something to look at slowly.',pieces:['gianduiotti','pendant','book']};
-  const PNG=new Set(['choc-box','choc-one','choc-open','pendant-1','pendant-2','pendant-3','pendant-4']);
+  const BOX1={name:'Set 01',line:'Something sweet, something to wear, something to look at slowly.',pieces:['gianduiotti','pendant','book']};
+  const BOX2={name:'Set 02',line:'An unconventional Valentine’s: incense to light, a card to pull, intentions to write down together.',pieces:['gianduiotti','incense','journal','tarot','ring']};
+  // If the budget is smaller, a box is cut down: pieces leave from the end of this order first.
+  const KEEP={'Set 01':['gianduiotti','book','pendant'],'Set 02':['tarot','incense','gianduiotti','journal','ring']};
+  // how many pieces each budget gets (null = the whole box)
+  const SIZE=[2,3,4,null,null];
+  let budgetIx=4, boxes=[BOX1];
+  function fit(b){
+    const n=SIZE[budgetIx]; if(n==null||n>=b.pieces.length) return {...b,full:true};
+    const keep=KEEP[b.name].slice(0,n);
+    return {...b,pieces:b.pieces.filter(id=>keep.includes(id)),extra:b.pieces.filter(id=>!keep.includes(id)),full:false,of:b.pieces.length};
+  }
+  // step 3: which partner is this
+  const TYPES=[['Romantic. Loves the classics',[BOX1]],['A little dark. Tarot, incense, candles',[BOX2]],['Not sure, show me both',[BOX1,BOX2]]];
+  const typeFor=t=>/dark|tarot|incense|candle|witch|spook|unconventional|intention|mystic/i.test(t)?[BOX2]:/both|not sure|either|don/i.test(t)?[BOX1,BOX2]:[BOX1];
+  const PNG=new Set(['choc-box','choc-one','choc-open','pendant-1','pendant-2','pendant-3','pendant-4','incense','journal','tarot-1']);
   window.IMG=k=>PNG.has(k)?'b1png/'+k+'.png':'b1/'+k+'.webp';
   window.IMGT=k=>PNG.has(k)?'b1png/t/'+k+'.png':'b1/t/'+k+'.webp';
   const BY=Object.fromEntries(CAT.map(c=>[c.id,c]));
@@ -508,11 +547,11 @@ Voice: warm, plain, short. No emojis, no exclamation marks, no marketing words, 
 The pieces (id: description: price):
 ${LIST}`;
 
-  const SETS_ASK=`
+  const setsAsk=bs=>{ const ids=CAT.map(c=>c.id); return `
 
-Right now the shop has one gift: Box 01, with all three pieces (gianduiotti, pendant, book). Write for this person. Prices are not set yet, so never mention prices or totals. The book is 18+: if the recipient seems to be a child or it clearly does not fit, say so kindly in the intro.
+Right now the shop shows ${bs.map(b=>b.name+' ('+b.pieces.join(', ')+')').join(' and ')}. Both sets are Valentine’s gifts for a partner. Set 01 is the classic romantic one; Set 02 is an unconventional Valentine’s, a little dark: tarot, incense, intentions written down together. Prices are not set yet, so never mention prices or totals. ${ids.includes('book')?'The book is 18+: if the recipient seems to be a child or it clearly does not fit, say so kindly in the intro.':''} Never claim the tarot predicts anything; it is for reflection.
 Reply with only JSON in this shape:
-{"intro":"one short sentence about the person, no product names","pieces":[{"id":"gianduiotti","why":"one short line on why it suits them"},{"id":"pendant","why":"..."},{"id":"book","why":"..."}]}`;
+{"intro":"one short sentence about the person, no product names","pieces":[${ids.map(id=>`{"id":"${id}","why":"one short line on why it suits them"}`).join(',')}]}`; };
 
   const history=[]; let sample=null, busy=false, stage='who', chosen=null;
   const transcript=()=>history.map(h=>h.who+': '+h.text).join('\n\n');
@@ -537,16 +576,26 @@ Reply with only JSON in this shape:
     const ask=m=>(m&&m[0]&&m[0].content)||'';
     const f=async(msgs,opts)=>{
       const q=ask(msgs); let text;
-      if(q.includes('three possible short messages')) text='Thank you, it’s a lovely one. Three for the card:\n1. Happy Valentine’s. All of this, chosen with you in mind.\n2. For the evenings that are just ours.\n3. Something sweet, something to wear, something to look at slowly. Like us.';
-      else text='For now there’s one box at the counter: Box 01. Tap any piece to see it closer, or choose it when it feels right.';
+      if(q.includes('three possible short messages')&&q.includes('take Set 02')) text='Good choice, it’s a strange and lovely one. Three for the card:\n1. Happy Valentine’s. Pull a card, light the incense, and tell me what you want this year.\n2. Not roses. Something better.\n3. For a night of writing down what we want, together.';
+      else if(q.includes('three possible short messages')) text='Thank you, it’s a lovely one. Three for the card:\n1. Happy Valentine’s. All of this, chosen with you in mind.\n2. For the evenings that are just ours.\n3. Something sweet, something to wear, something to look at slowly. Like us.';
+      else text='For now there’s one set at the counter: Set 01. Tap any piece to see it closer, or choose it when it feels right.';
       await pause(500);
       if(opts&&opts.onText){ for(let i=8;i<text.length;i+=8){ opts.onText({text:text.slice(0,i)}); await pause(30); } }
       return {text};
     };
     f.json=async msgs=>{
       const q=ask(msgs); await pause(900);
+      if(q.includes('recipient will open')&&q.includes('tarot')) return {to:'',note:'Happy Valentine’s. No roses this year: light the incense, pull a card each, and let’s write down what we want next.',lines:{gianduiotti:'For in between the cards. One each.',incense:'Light it first, so the room knows the evening has started.',journal:'For what we decide tonight, so we can read it back next February.',tarot:'Pull one card each and talk about what it brings up.',ring:'Something to wear that holds what you wrote down.'}};
       if(q.includes('recipient will open')) return {to:'',note:'Happy Valentine’s. Something sweet, something to wear, and something to look at slowly, together. All of it chosen with you in mind.',lines:{gianduiotti:'One at a time, on the sofa, after dinner.',pendant:'Old and warm, for every day after the fourteenth.',book:'Photographs to look through slowly, together.'}};
-      return {intro:'Someone you share slow evenings with.',pieces:[{id:'gianduiotti',why:'Something sweet to share, one at a time.'},{id:'pendant',why:'Old, warm and quiet, to wear every day after the fourteenth.'},{id:'book',why:'A book of photographs to look through together, slowly.'}]};
+      const dark=q.includes('Set 02 ('), classic=q.includes('Set 01 (');
+      return {intro:dark&&classic?'Two ways to do it: the classic, or something stranger.':dark?'Someone who’d rather pull a card than get roses.':'Someone you share slow evenings with.',pieces:[
+        {id:'gianduiotti',why:dark&&!classic?'Something sweet for in between the cards.':'Something sweet to share, one at a time.'},
+        {id:'pendant',why:'Old, warm and quiet, to wear every day after the fourteenth.'},
+        {id:'book',why:'A book of photographs to look through together, slowly.'},
+        {id:'incense',why:'Light it first and let the room go a little dark.'},
+        {id:'journal',why:'To write down what you both want next, and read it back next year.'},
+        {id:'tarot',why:'Pull one card each. Not for answers, for the conversation.'},
+        {id:'ring',why:'A heavy old ring to hold onto what you wrote.'}]};
     };
     return f;
   }
@@ -567,22 +616,48 @@ Reply with only JSON in this shape:
     if(busy) return;
     const chips=log.querySelector('.budgets'); if(chips) chips.remove();
     line('me',t); history.push({who:'Customer (budget)',text:t});
+    const k=BUDGETS.indexOf(t); if(k>=0) budgetIx=k; else { const n=parseFloat(String(t).replace(',','.').replace(/[^0-9.]/g,'')); budgetIx=isNaN(n)?4:n<35?0:n<60?1:n<100?2:3; }
+    askType();
+  }
+  function askType(){
+    stage='type';
+    line('tyy','Which of these sounds most like them?');
+    const row=document.createElement('div'); row.className='budgets'; row.setAttribute('role','group'); row.setAttribute('aria-label','Your partner');
+    TYPES.forEach(([t,bs])=>{ const b=document.createElement('button'); b.type='button'; b.className='budget'; b.textContent=t;
+      b.addEventListener('click',()=>takeType(t,bs)); row.appendChild(b); });
+    log.appendChild(row); log.scrollTop=log.scrollHeight; say.placeholder='Or tell me about them…';
+  }
+  function takeType(t,bs){
+    if(busy) return;
+    const chips=log.querySelector('.budgets'); if(chips) chips.remove();
+    line('me',t); history.push({who:'Customer (what their partner is like)',text:t});
+    boxes=(bs||typeFor(t)).map(fit);
     stage='sets'; say.placeholder='Ask to swap a piece, or for the card words…';
     showSets();
   }
 
   // step 3: two gift sets
+  const BOX_IDS=set=>((set.name==='Set 02'?BOX2:BOX1).pieces);
   function setCard(set,i){
-    const pieces=(set.pieces||[]).filter(p=>BY[p.id]);
-    const priced=pieces.every(p=>BY[p.id].price!=null);
-    const total=priced?pieces.reduce((a,p)=>a+BY[p.id].price,0):null;
+    const pieces=(set.pieces||[]).filter(p=>BY[p.id]), extra=(set.extra||[]).filter(p=>BY[p.id]);
     const el=document.createElement('article'); el.className='set';
     const h=document.createElement('h2'); h.className='set-name'; h.textContent=set.name||('Gift '+(i+1));
     const l=document.createElement('p'); l.className='set-line'; l.textContent=set.line||'';
+    const cut=document.createElement('p'); cut.className='set-cut';
     const ul=document.createElement('ul'); ul.className='pieces';
-    pieces.forEach(p=>{ const c=BY[p.id];
-      const li=document.createElement('li'); li.className='piece'; li.tabIndex=0; li.setAttribute('role','button'); li.setAttribute('aria-label','More about '+c.name);
-      li.addEventListener('click',()=>quick(c,p.why)); li.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); quick(c,p.why);} });
+    const more=document.createElement('ul'); more.className='pieces more';
+    const moreH=document.createElement('p'); moreH.className='more-h'; moreH.textContent='Add more to the set';
+    const tt=document.createElement('p'); tt.className='set-total';
+    function total(){ const priced=pieces.every(p=>BY[p.id].price!=null); return priced?pieces.reduce((a,p)=>a+BY[p.id].price,0):null; }
+    function refresh(){
+      const t=total(); tt.innerHTML='<span>Together</span> '+(t==null?'Price to come':'€'+t);
+      const left=extra.filter(p=>(set.of?1:0)&&BOX_IDS(set).includes(p.id)).length;
+      cut.textContent=left?'Cut down for your budget: '+(set.of-left)+' of its '+set.of+' pieces.':'';
+      cut.hidden=!left; moreH.hidden=!extra.length;
+    }
+    function row(p,isExtra){ const c=BY[p.id];
+      const li=document.createElement('li'); li.className='piece'+(isExtra?' extra':''); li.tabIndex=0; li.setAttribute('role','button'); li.setAttribute('aria-label','More about '+c.name);
+      li.addEventListener('click',()=>quick(c,p.why)); li.addEventListener('keydown',e=>{ if(e.target===li&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); quick(c,p.why);} });
       const ph=document.createElement('div'); ph.className='thumb';
       if(c.imgs&&c.imgs.length){ const im=document.createElement('img'); im.src=IMGT(c.imgs[0]); im.alt=''; im.loading='lazy'; ph.appendChild(im); }
       else { ph.classList.add('blank'); ph.textContent=c.name.split(' ').slice(-1)[0]; }
@@ -591,14 +666,23 @@ Reply with only JSON in this shape:
       const ab=document.createElement('p'); ab.className='pabout'; ab.textContent=c.about+(c.tag?' · '+c.tag:'');
       const wy=document.createElement('p'); wy.className='pwhy'; wy.textContent=p.why||'';
       tx.append(nm,ab,wy);
-      const pr=document.createElement('p'); pr.className='pprice'; pr.textContent=c.price==null?'':'€'+c.price;
-      li.append(ph,tx,pr); ul.appendChild(li); });
+      const side=document.createElement('div'); side.className='pside';
+      const pr=document.createElement('p'); pr.className='pprice'; pr.textContent=c.price==null?'':'€'+c.price; side.appendChild(pr);
+      if(isExtra){ const add=document.createElement('button'); add.type='button'; add.className='padd'; add.textContent='+ Add'; add.setAttribute('aria-label','Add '+c.name+' to the set');
+        add.addEventListener('click',e=>{ e.stopPropagation(); if(busy||el.classList.contains('picked')) return;
+          extra.splice(extra.indexOf(p),1); pieces.push(p); li.classList.remove('extra'); add.remove(); li.classList.add('added'); ul.appendChild(li); refresh();
+          history.push({who:'Customer',text:'(added '+c.name+' to '+set.name+')'}); });
+        side.appendChild(add); }
+      li.append(ph,tx,side); return li;
+    }
+    pieces.forEach(p=>ul.appendChild(row(p,false)));
+    extra.forEach(p=>more.appendChild(row(p,true)));
     const foot=document.createElement('div'); foot.className='set-foot';
-    const tt=document.createElement('p'); tt.className='set-total'; tt.innerHTML='<span>Together</span> '+(total==null?'Price to come':'€'+total);
     const b=document.createElement('button'); b.type='button'; b.className='choose'; b.textContent='Choose this gift';
-    b.addEventListener('click',()=>choose(set,pieces,total,el));
+    b.addEventListener('click',()=>choose(set,pieces.slice(),total(),el));
     foot.append(tt,b);
-    el.append(h,l,ul,foot);
+    refresh();
+    el.append(h,l,cut,ul,moreH,more,foot);
     return {el,ok:pieces.length>=2};
   }
 
@@ -634,18 +718,21 @@ Reply with only JSON in this shape:
 
   async function showSets(){
     lock(true);
-    const wait=line('tyy wait','Putting your box together…');
+    const wait=line('tyy wait',boxes.length>1?'Putting both sets together…':'Putting your set together…');
     let res=null;
-    try{ res=await sample.json([{role:'user',content:SHOP+'\n\nThe conversation so far:\n\n'+transcript()+SETS_ASK}],{cache:false}); }
+    try{ res=await sample.json([{role:'user',content:SHOP+'\n\nThe conversation so far:\n\n'+transcript()+setsAsk(boxes)}],{cache:false}); }
     catch(err){ if(err&&err.code==='not_granted'){ wait.remove(); failText(err); lock(false); return; } }
     wait.remove();
     const why=Object.fromEntries(((res&&res.pieces)||[]).map(p=>[p.id,p.why]));
-    const set={name:BOX1.name,line:BOX1.line,pieces:BOX1.pieces.map(id=>({id,why:why[id]||''}))};
     if(res&&res.intro) line('tyy',String(res.intro));
-    const card=setCard(set,0);
-    const wrap=document.createElement('div'); wrap.className='sets one'; wrap.appendChild(card.el); log.appendChild(wrap);
-    history.push({who:'Tyy',text:'(showed Box 01: gianduiotti, pendant, book)'});
-    line('tyy','Tap any piece to see it closer. Choose it when it feels right.');
+    const wrap=document.createElement('div'); wrap.className='sets'+(boxes.length>1?'':' one');
+    boxes.forEach((bx,i)=>{
+      const set={name:bx.name,line:bx.line,of:bx.of,pieces:bx.pieces.map(id=>({id,why:why[id]||''})),extra:(bx.extra||[]).concat(CAT.map(c=>c.id).filter(id=>!bx.pieces.includes(id)&&!(bx.extra||[]).includes(id))).map(id=>({id,why:why[id]||''})),cut:(bx.extra||[]).length};
+      wrap.appendChild(setCard(set,i).el);
+    });
+    log.appendChild(wrap);
+    history.push({who:'Tyy',text:'(showed '+boxes.map(bx=>bx.name+': '+bx.pieces.join(', ')).join('; and ')+')'});
+    line('tyy',boxes.length>1?'Tap any piece to see it closer. Choose the one that feels like them.':'Tap any piece to see it closer. Choose it when it feels right.');
     form.hidden=false;
     wrap.scrollIntoView({block:'start',behavior:'smooth'});
     lock(false);
@@ -653,7 +740,7 @@ Reply with only JSON in this shape:
 
   function choose(set,pieces,total,el){
     if(busy) return;
-    try{ sessionStorage.setItem('tyy:gift',JSON.stringify({who:(history.find(h=>h.who.startsWith('Customer (who'))||{}).text||'',name:set.name||'',pieces:pieces.map(p=>({id:p.id,why:p.why||''}))})); sessionStorage.removeItem('tyy:giftText'); }catch(e){}
+    try{ sessionStorage.setItem('tyy:gift',JSON.stringify({who:(history.find(h=>h.who.startsWith('Customer (who'))||{}).text||'',name:set.name||'',self:!!set.self,pieces:pieces.map(p=>({id:p.id,why:p.why||''}))})); sessionStorage.removeItem('tyy:giftText'); localStorage.removeItem('tyy:giftEdit'); }catch(e){}
     setTimeout(()=>{ const a=document.createElement('a'); a.className='preview-link'; a.href='#gift'; a.textContent='See the page they’ll open'; log.appendChild(a); },50);
     chosen=set; log.querySelectorAll('.set').forEach(s=>s.classList.toggle('dim',s!==el)); el.classList.add('picked');
     const t='I’ll take '+(set.name||'this one')+'.'; line('me',t);
@@ -680,6 +767,7 @@ Reply with only JSON in this shape:
     say.value=''; grow(); hints.hidden=true;
     if(stage==='who'){ line('me',text); history.push({who:'Customer (who it is for)',text}); stage='budget'; askBudget(); return; }
     if(stage==='budget'){ takeBudget(text); return; }
+    if(stage==='type'){ takeType(text); return; }
     line('me',text); history.push({who:'Customer',text}); reply();
   });
 })();
@@ -709,7 +797,8 @@ Reply with only JSON in this shape:
     cur=JSON.parse(JSON.stringify(g));
     const BY=(window.__tyy&&window.__tyy.BY)||{};
     $('gTo').textContent=g.to||'you'; $('gToLid').textContent=g.to||'you';
-    $('gFromTop').textContent=(g.from?'A gift from '+g.from+', wrapped':'Wrapped')+' by hand at Tyy';
+    gift.classList.toggle('self',!!g.self);
+    $('gFromTop').textContent=g.self?'For a night in. Wrapped by hand at Tyy':(g.from?'A gift from '+g.from+', wrapped':'Wrapped')+' by hand at Tyy';
     $('gFrom').textContent=g.from||'a friend'; $('gFrom2').textContent=g.from||'them';
     $('gWords').textContent=g.note||'';
     $('gMeta').textContent='Packed by hand in Amsterdam · '+packed;
@@ -749,13 +838,13 @@ Reply with only JSON in this shape:
     try{ pick=JSON.parse(sessionStorage.getItem('tyy:gift')||'null'); cached=JSON.parse(sessionStorage.getItem('tyy:giftText')||'null'); }catch(e){}
     if(!pick||!pick.pieces||!pick.pieces.length) return null;
     if(cached) return cached;
-    const base={to:'',from:'',note:'',pieces:pick.pieces.map(p=>({id:p.id,line:p.why}))};
+    const base={to:'',from:'',note:'',self:!!pick.self,pieces:pick.pieces.map(p=>({id:p.id,line:p.why}))};
     const sample=window.__tyy&&window.__tyy.getSample&&window.__tyy.getSample();
     if(!sample) return base;
     const BY=window.__tyy.BY;
     try{
-      const r=await sample.json([{role:'user',content:'A customer at Tyy, a small gift shop, chose a gift. Who it is for, in the customer’s words: "'+pick.who+'". The pieces: '+pick.pieces.map(p=>p.id+' ('+BY[p.id].name+'): '+p.why).join('; ')+'.\n\nWrite the page the recipient will open when they scan the card in the box. Speak to the recipient as "you". Warm, plain, short, no emojis, no exclamation marks, no mention of AI. Reply with only JSON: {"to":"the recipient’s first name if the customer gave one, else empty","note":"a two-sentence note from the giver, as the giver, placeholder-free","lines":{"<piece id>":"one sentence to the recipient on why this piece is for them"}}'}],{cache:false});
-      const out={to:r.to||'',from:'',note:r.note||'',pieces:pick.pieces.map(p=>({id:p.id,line:(r.lines&&r.lines[p.id])||p.why}))};
+      const r=await sample.json([{role:'user',content:'A customer at Tyy, a small gift shop, chose a gift. Who it is for, in the customer’s words: "'+pick.who+'". The pieces: '+pick.pieces.map(p=>p.id+' ('+BY[p.id].name+'): '+p.why).join('; ')+'.'+(pick.self?' This is a gift the customer bought for themselves, for a night in alone, setting intentions: write the note as a note to themselves, and leave "to" empty.':'')+'\n\nWrite the page the recipient will open when they scan the card in the box. Speak to the recipient as "you". Warm, plain, short, no emojis, no exclamation marks, no mention of AI. Reply with only JSON: {"to":"the recipient’s first name if the customer gave one, else empty","note":"a two-sentence note from the giver, as the giver, placeholder-free","lines":{"<piece id>":"one sentence to the recipient on why this piece is for them"}}'}],{cache:false});
+      const out={to:pick.self?'':(r.to||''),from:'',note:r.note||'',self:!!pick.self,pieces:pick.pieces.map(p=>({id:p.id,line:(r.lines&&r.lines[p.id])||p.why}))};
       try{ sessionStorage.setItem('tyy:giftText',JSON.stringify(out)); }catch(e){}
       return out;
     }catch(e){ return base; }
@@ -775,7 +864,7 @@ Reply with only JSON in this shape:
   function collect(){
     const t=s=>(s||'').replace(/\s+/g,' ').trim();
     const pieces=[...document.querySelectorAll('#gPieces .g-piece')].map(r=>({id:r.dataset.id,line:t(r.querySelector('.g-why').textContent)}));
-    return {to:t($('gTo').textContent), from:t($('gFrom').textContent), note:$('gWords').innerText.trim(), pieces};
+    return {to:t($('gTo').textContent), from:t($('gFrom').textContent), note:$('gWords').innerText.trim(), self:!!(cur&&cur.self), pieces};
   }
   $('gEdit').addEventListener('click',()=>setEditing(true));
   $('gDone').addEventListener('click',()=>{ const g=collect(); try{ localStorage.setItem('tyy:giftEdit',JSON.stringify(g)); }catch(e){} paint(g); setEditing(false); $('gSavedEdit').hidden=false; setTimeout(()=>{$('gSavedEdit').hidden=true;},2600); });
